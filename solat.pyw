@@ -1,326 +1,253 @@
-##import webbrowser, os, bs4, re, time, pyautogui, win32gui, tkinter, datetime
-import webbrowser, os, bs4, re, time, pyautogui, tkinter, datetime, requests, socket
+from win32com.client import DispatchEx
+import pywintypes
+import time
+from bs4 import BeautifulSoup
+import datetime
+import tkinter as tk
 from tkinter import messagebox
 from pygame import mixer
+import threading, os
 
-address = 'http://jadwalsholat.pkpu.or.id/monthly.php?id=308'
-folder = r'D:\Users\Downloads'
-file = ''
-filepath = os.path.join(folder, file)
-
-##web =  requests.get(address)
-##web.raise_for_status()
-##webtext = bs4.BeautifulSoup(web.text)
-
-p = 0
-e = 0
-test = ""
-##def moving():
-##        global test
-##        time.sleep(2)
-##        test = win32gui.FindWindow(None, "Waktu Shalat Gan")
-##        if test > 0:
-##                x,y,wi,he = win32gui.GetWindowRect(test)
-##                wi = wi-x
-##                he = he-y
-##                win32gui.MoveWindow(test, 1000, 450, wi, he, False)
-##                win32gui.SetForegroundWindow(test)
-##        else:
-##                moving()
-
-
-
-def cekrefresh():
-        try:
-                messagebox.showinfo("Checking", "checking internet connection..")
-                socket.setdefaulttimeout(15)
-                host = socket.gethostbyname("www.google.com")
-                s = socket.create_connection((host, 80), 2)
-                s.close()
-                return 1
-        except Exception:
-                return 0
-
-def solat():
-##    os.system('cls')
-        global p, w, e, cc, c, file, b, a
-        internet = cekrefresh()
-        if internet == 1:
-                web =  requests.get(address)
-                webtext = bs4.BeautifulSoup(web.text, 'html.parser')
-                a = webtext.select("tr[align='center']")
-                a = str(a[0])
-                openfile = open('jadwalshalat.txt', 'w')
-                openfile.write(a)
-                openfile.close()
-                openfile = open('jadwalshalat.txt')
-                a = openfile.read()
-        else:
-                messagebox.showinfo('Ga ada koneksi internet', 'cek manual dari file')
-                try:
-                        for filename in os.listdir():
-                                if filename.endswith('.html'):
-                                        file = filename
-                                        break
-                        print(file)
-                        openfile = open(file)
-                        opensoup = bs4.BeautifulSoup(openfile, 'html.parser')
-                        a = opensoup.select("tr[align='center']")
-##                        a = str(a[0])
-                        a = str(a)
-                        openfile = open('jadwalshalat.txt', 'w')
-                        openfile.write(a)
-                        openfile.close()
-                        openfile = open('jadwalshalat.txt')
-                        a = openfile.read()
-                        openfile.close()
-
-                except FileNotFoundError:
-                        messagebox.showinfo('error', 'manual update file ga ada,  jadinya pake data lama')
-                        try:
-                                openfile = open('jadwalshalat.txt')
-                                a = openfile.read()                    
-                        except FileNotFoundError:
-                                messagebox.showinfo('Data lama ga ada', 'Please activate your internet or put file : ' + file + ' in same folder')
-                                return
-##        
-        datenow = datetime.datetime.now()
-        datenow = datenow.strftime('%d')
-        b = re.compile(r'<b>'+datenow+'</b></td><td>(\d\d:\d\d)</td><td>(\d\d:\d\d)</td><td>(\d\d:\d\d)</td><td>(\d\d:\d\d)</td><td>(\d\d:\d\d)')
-        c = b.findall(a)
-        c = c[0]
-        if p == 0:         
-                p = 1
-                rr = 0
-                for i in d:
-                    w[e] = tkinter.Label(root,
-                                        text=c[e],
-                                        padx = 20,
-                                        justify='left', bg="white")
-                    w[e].grid(row=rr, column=1)
-                    e += 1
-                    rr += 1
-                cektime()
-        else:
-##                webbrowser.open(address)
-##                time.sleep(2)
-##                pyautogui.hotkey('ctrl', 's')
-##                time.sleep(2)
-##                pyautogui.hotkey('ctrl', 'c')
-##                pyautogui.typewrite(['tab','w','w', 'enter', 'y'])
-##                time.sleep(2)
-##                try:
-##                        openfile = open(filepath)
-##                except FileNotFoundError:
-##                        openfile = open(file)
-##                opensoup = bs4.BeautifulSoup(openfile, 'html.parser')
-##                a = opensoup.select("tr[class='table_highlight']")
-##                a = str(a[0])
-##                b = re.compile(r'\d\d:\d\d')
-##                c = b.findall(a)
-                e = 0
-                for i in d:
-                    w[e].configure(text=c[e])
-                    e += 1
-                cektime()
-##                moving()
-
-gantiaku = 0
-nil = 0
-gambar = 0
-sama = 0
-def cektime():
-        global s,gantiaku, notext, now, time1, timenow, nil,sa, gambar, sama
-        now = datetime.datetime.now()
-        notext = now.strftime('%H:%M')
-        timenow = now.replace(hour=int(notext[0:2]), minute=int(notext[3:6]), second=0, microsecond=0)
-        for i in range(5):
-                time1 = now.replace(hour=int(c[i][0:2]), minute=int(c[i][3:6]), second=0, microsecond=0)
-                if time1 == timenow:
-                        if sama == 0:
-                                sama = 1
-                                if gambar == 0:
-                                        gambar = 1
-                                        sop.configure(state='normal')
-                                        if str(d[i]) == 'Shubuh':
-                                               mixer.music.load('azansubuh.mp3')
-                                               mixer.music.play()
-                                        else:
-                                               mixer.music.load('azan.mp3')
-                                               mixer.music.play()
-                                        os.startfile('shalat.png')
-##                                        messagebox.showinfo('Waktu Shalat', 'Waktu shalat '+str(d[i]) +' gan!')
-                        sa = i
-                        if i == 4:
-                                sa = 0
-                        else:
-                                sa+=1
-                        w[sa].configure(bg='blue', fg='white')
-                        s = i
-                        minus30()
-                        ganti()
-                        nil = 0                                
-                        break
-
-                elif time1 > timenow:
-                        w[i].configure(bg='blue', fg='white')
-                        sa = i
-                        if i > 0:
-                                s = sa-1
-                        else:
-                                s = 4
-                        w[s].configure(bg='light green')
-                        
-                        minus30()
-                        ganti()
-                        nil = 0
-                        
-                        break
-                else:
-                        if nil < 5:
-                                nil +=1
-                        elif nil == 5:
-                                sa = 0
-                                s = 4
-                                w[sa].configure(bg='blue', fg='white')
-                                nil = 0
-                                minus30()
-                                ganti()
-                        
-        root.after(2000, cektime)
-        
-def minus30():
-        global min30, other, bal                
-        da = now.day
-        other = []
-       
-        if s == 4 or sa == 0:
-                bal = [0, 4]
-        else:
-                bal = [s, sa]
-        for i in range(5):
-                if i not in bal:
-                        other += [i]                
-        if s != 4:
-                jams = int(c[s+1][0:2])
-                menits = int(c[s+1][3:6])
-        else:
-                jams = int(c[0][0:2])
-                menits = int(c[0][3:6])
-                da += 1
-        for i in other:
-                w[i].configure(bg='white', fg='black')
-        if menits < 30:
-               if jams < 1:
-                       jams = 0
-               if jams >= 1 :
-                       jams -= 1
-                       menits += 60
-        if menits > 30:
-               min30 = now.replace(day=da, hour=jams, minute=menits-30, second=0, microsecond=0)
-        else:
-               min30 = now.replace(day=da, hour=jams, minute=menits, second=0, microsecond=0)
-
-
-noob = 0
-plus1 = 0
-def ganti():
-        global gantiaku, tsubuh, tsubuh30min, sis, gambar, balik, noob, sama, plus1
-##        print('sama='+str(sama))
-##        print('gambar='+str(gambar))
-##        print('noob='+str(noob))
-        if gambar == 1:
-
-                if noob == 0:
-                        plus1 = s
-                        noob = 1
-                else:
-                        balik = now.replace(hour=int(c[plus1][0:2]), minute=int(c[plus1][3:6])+1, second=0, microsecond=0)
-                        if timenow > balik:
-                                gambar = 0
-                                noob = 0
-                                sama = 0
-        sis = int(c[0][3:6])
-        if sis < 15:
-                tsubuh = now.replace(hour=int(c[0][0:2]), minute=int(c[0][3:6])+45, second=0, microsecond=0)
-        else:
-                sis = sis-15
-                tsubuh = now.replace(hour=int(c[0][0:2])+1, minute=sis, second=0, microsecond=0)
-        sis = int(c[0][3:6])
-        if sis < 30:
-                tsubuh30min = now.replace(hour=int(c[0][0:2]), minute=int(c[0][3:6])+30, second=0, microsecond=0)
-        else:
-                sis = sis-30
-                tsubuh30min = now.replace(hour=int(c[0][0:2])+1, minute=sis, second=0, microsecond=0)
-        if gantiaku == 0:
-                if timenow  < min30:
-                        if s == 0 and timenow < tsubuh30min:
-                                w[s].configure(bg='light green', fg='black')
-                        elif s == 0 and timenow < tsubuh and timenow > tsubuh30min or (s == 0 and timenow > tsubuh):
-                                w[s].configure(bg='yellow', fg='black')
-                        elif s != 0:
-                                w[s].configure(bg='light green', fg='black')
-                else:
-                        w[s].configure(bg='yellow', fg='black')
-                gantiaku = 1
-                return
-        elif gantiaku == 1:
-                if timenow  < min30:
-                        if s == 0 and timenow < tsubuh30min:
-                                w[s].configure(bg='green', fg='white')
-                        elif s == 0 and timenow < tsubuh and timenow > tsubuh30min  or (s == 0 and timenow > tsubuh):
-                                w[s].configure(bg='red', fg='white')
-                        elif s != 0:
-                                w[s].configure(bg='green', fg='white')
-                        
-                else:
-                        w[s].configure(bg='red', fg='white')
-                gantiaku = 0
-                
-
-
-
-root = tkinter.Tk()
-root.title("Waktu Shalat Gan")
-pat = "praying-icon.ico"
-root.iconbitmap(pat) 
-root.geometry('{}x{}'.format(150,160))
-root.resizable(width=False, height=False)
-menu = tkinter.Menu(root)
-root.config(menu=menu)
-filemenu = tkinter.Menu(menu, tearoff=0)
-helpmenu = tkinter.Menu(menu, tearoff=0)
-menu.add_cascade(label="Created By Fikri", menu=filemenu)
-filemenu.add_command(label="Keluar", command=root.destroy)
-
-button = tkinter.Button(root, text='refresh', command=solat)
-button.grid(row=6, column =1, pady=5)
-
-def stopazan():
-        mixer.music.stop()
-        sop.configure(state='disabled')
-
-sop = tkinter.Button(root, text='Stop Sound', command=stopazan)
-sop.grid(row=6, column =0, pady=5)
-sop.configure(state='disabled')
-
-d = ['Shubuh', 'Zhuhur', 'Ashar', 'Magrib', 'Isya']
-l = {}
-w = {}
-rr = 0
-cc = 0
-
-for i in d:
-    l[i] = tkinter.Label(root, 
-          text=i,
-          bg = "light blue",
-          padx = 20)
-    l[i].grid(row=rr, column=cc, sticky= 'w'+'e')
-    rr += 1
-
-solat()
-##moving()
-root.after(100, cektime)
 mixer.init()
 
-root.mainloop()
+def cek_waktu():
+    global pray_time_today, pray_table, coba, pray_time_today_dt, nama_tk, waktu_tk, tg
+    ie = DispatchEx('InternetExplorer.Application')
+    ie.Visible = 0
+    ie.Navigate("https://jadwalsholat.pkpu.or.id/?id=308")
+
+    coba = 0
+    def coba_ie():
+        global myfilebox, coba
+        try:
+            myfile = open('data.html', 'r')
+            myfilebox = myfile.read()
+            myfile.close()
+            soup = BeautifulSoup(myfilebox,"html.parser")
+            databulan = soup.find_all('td', {"style":"width: 50%;"})
+            databulan = databulan[0].find_all('b')[0].contents[0]
+            databulanskr = datetime.datetime.now()
+            databulanskr = datetime.datetime.strftime(databulanskr, "%B %Y")
+            bulan_id = {
+                'January':'Januari',
+                'February':'Februari',
+                'March' : 'Maret',
+                'April' : 'April',
+                'May' : 'Mei',
+                'Juny' : 'Juni',
+                'July' : 'Juli',
+                'August' : 'Agustus',
+                'September' : 'September',
+                'October' : 'Oktober',
+                'November' : 'November',
+                'December' : 'Desember'
+                }
+            databulanskr = databulanskr.split(' ')
+            databulanskr[0] = bulan_id[databulanskr[0]]
+            databulanskr = ' '.join(databulanskr)
+            if databulan == databulanskr:
+                return
+            else:
+                os.remove('data.html')
+                myfile = open('data.html', 'r')
+        except FileNotFoundError:
+            try:
+                myfilebox = ie.Document.body.innerHTML
+                myfile = open('data.html', 'w')
+                myfile.write(myfilebox)
+                myfile.close()
+            except pywintypes.com_error:
+                time.sleep(3)
+                coba += 1
+                if coba <= 5:
+                    coba_ie()
+                else:
+                    try:
+                        myfile = open('data.html')
+                        myfilebox = myfile.read()
+                        myfile.close()
+                    except FileNotFoundError:                       
+                        messagebox.showinfo('Error','Minimal 1x ada koneksi')
+                        root.destroy()
+                        tg = 1
+                        return        
+
+                
+    coba_ie()
+   
+    ie.Quit()
+
+    soup = BeautifulSoup(myfilebox,"html.parser")
+    tables = soup.find_all('tr', {"align": "center"})
+    day = datetime.datetime.now().day
+
+    pray_table = tables[day].findAll("td")
+    pray_time_today = {}
+    pray_time_today_dt = {}
+    waktu_skr  = datetime.datetime.now()
+    tahun = waktu_skr.year
+    bulan = waktu_skr.month
+    tanggal = waktu_skr.day   
+    
+    shalat_name = ['Tgl', 'Shubuh', 'Dzuhur', 'Ashr', 'Maghrib', 'Isya']
+
+    for n in range(1, len(pray_table)):
+        pray_time_today[shalat_name[n]] = str(pray_table[n].contents[0])
+        time_shalat = datetime.datetime.strptime(pray_time_today[shalat_name[n]], "%H:%M")
+        jam = time_shalat.hour
+        menit = time_shalat.minute
+        pray_time_today_dt[shalat_name[n]] = datetime.datetime(tahun, bulan, tanggal, jam, menit)
+
+    nama_tk = {}
+    waktu_tk = {}
+
+    n = 0
+    for nama in pray_time_today:
+        nama_tk[nama] = tk.Label(frame_nama, text=nama, bg='lightblue', padx = 20)
+        nama_tk[nama].grid(row=n, column=0)
+        waktu_tk[nama] = tk.Label(frame_nama, text=pray_time_today[nama], padx = 20, bg='white')
+        waktu_tk[nama].grid(row=n, column=1)
+        n += 1
+
+def ontop():
+    global ontop
+    if ontop == 0:
+        root.attributes("-topmost", True)
+        filemenu.entryconfigure(0, label="Always on Top \u2713")
+        root.attributes("-alpha", .70)
+        ontop = 1
+    else:
+        root.attributes("-topmost", False)
+        filemenu.entryconfigure(0, label="Always on Top")
+        root.attributes("-alpha", 1)
+        ontop = 0
+
+def opensite():
+    os.startfile('https://jadwalsholat.pkpu.or.id/?id=308')
+
+def threadmain():
+    global root, frame_nama, waktu_skr, stop_button, filemenu
+       
+    waktu_skr  = datetime.datetime.now()     
+    root = tk.Tk()
+    icon = resource_path("praying-icon.ico")
+    root.iconbitmap(icon) 
+    root.resizable(width=False, height=False)
+    root.title('Waktu Shalat')
+    frame_nama = tk.Frame(root, bg='lightblue')
+    frame_nama.grid(row=0, column=0)
+    frame_button = tk.Frame(root)
+    frame_button.grid(row=1, column=0, columnspan = 2)
+    stop_button = tk.Button(frame_button, text='Stop Sound', command=stopazan)
+    stop_button.pack()
+    stop_button.configure(state='disabled')
+    menu = tk.Menu(root)
+    root.config(menu=menu)
+    filemenu = tk.Menu(menu, tearoff=0)
+    menu.add_cascade(label="Help", menu=filemenu)
+    filemenu.add_command(label="Always on Top", command=ontop)
+    filemenu.add_command(label="Open Shalat site", command=opensite)
+    filemenu.add_command(label="Exit", command=onexit)
+    root.protocol("WM_DELETE_WINDOW", onexit)
+    root.after(1000, cek_time_shalat)
+    root.mainloop()
+
+def onexit():
+        global tg
+        tg = 1
+
+def cek_time_shalat():
+    global shalat_selanjut, warna, shalat_sekarang
+    waktu_skr  = datetime.datetime.now()
+
+    try:
+        for waktu in pray_time_today_dt:
+            if pray_time_today_dt[waktu] < waktu_skr:
+                shalat_sekarang = waktu
+                warna = 'light'
+                if shalat_sekarang == 'Isya':
+                    shalat_selanjut = 'Shubuh'
+                    root.after(3000, highlight)
+                    break
+                
+            if pray_time_today_dt[waktu] > waktu_skr:
+                shalat_selanjut = waktu                
+                waktu_tk[shalat_selanjut].config(bg='blue', fg='white')
+                root.after(3000, highlight)
+                break
+               
+    except NameError:
+        root.after(1000, cek_time_shalat)
+
+def waktu_shalat():
+    if shalat_sekarang == 'Shubuh':
+        mixer.music.load(azansubuh)
+    else:
+        mixer.music.load(azan)
+    mixer.music.play()
+    stop_button.configure(state='normal')
+    os.startfile(salatpng)
+    root.after(1000, cek_time_shalat)
+
+def stopazan():
+    mixer.music.stop()
+    stop_button.configure(state='disabled')
+        
+def highlight():
+    global warna
+    
+    waktu_skr  = datetime.datetime.now()
+    waktu_nanti = pray_time_today_dt[shalat_selanjut]
+    jarak_30min = waktu_skr + datetime.timedelta(minutes = 30)
+           
+    if waktu_skr >= waktu_nanti:
+        waktu_tk[shalat_sekarang].config(bg='white', fg='black')
+        waktu_shalat()
+        return
+
+    if jarak_30min < waktu_nanti:
+        if warna == 'light':
+            waktu_tk[shalat_sekarang].config(bg='green', fg='white')
+            warna = 'dark'
+        elif warna == 'dark':
+            waktu_tk[shalat_sekarang].config(bg='light green', fg='black')
+            warna = 'light'
+
+        root.after(3000, highlight)
+    else:
+        waktu_tk[shalat_selanjut].config(bg='green', fg='white')
+        if warna == 'light':
+            waktu_tk[shalat_sekarang].config(bg='red', fg='white')
+            warna = 'dark'
+        elif warna == 'dark':
+            waktu_tk[shalat_sekarang].config(bg='yellow', fg='black')
+            warna = 'light'
+        root.after(3000, highlight)
+    if shalat_sekarang == 'Shubuh' and pray_time_today_dt[shalat_sekarang]+datetime.timedelta(minutes = 30) < waktu_skr:
+        waktu_tk[shalat_sekarang].config(bg='white', fg='black')
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+azansubuh = resource_path('azansubuh.mp3')
+azan = resource_path('azan.mp3')
+salatpng = resource_path('shalat.png')
+        
+if __name__ == '__main__':
+    st = threading.Thread(target=threadmain)
+    st.daemon = True
+    st.start()
+    cek_waktu()
+    tg = 0
+    ontop = 0
+    while 1:
+        if tg == 1:
+            root.quit()
+            break
